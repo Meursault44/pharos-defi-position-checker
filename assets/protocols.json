@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-06-07",
+  "notes": [
+    "Pharos public DeFi is still emerging. Keep planned protocols disabled until verified contracts are live.",
+    "Add protocol contracts and checks here without changing the TypeScript scanner."
+  ],
+  "protocols": [
+    {
+      "name": "Future Pharos Lending Market",
+      "slug": "future-pharos-lending",
+      "network": "mainnet",
+      "status": "planned",
+      "category": "lending",
+      "url": null,
+      "contracts": [],
+      "checks": [],
+      "notes": "Template entry. Replace with verified pool, debt token, and collateral token checks when a Pharos lending market launches."
+    },
+    {
+      "name": "Future Pharos DEX LP",
+      "slug": "future-pharos-dex-lp",
+      "network": "mainnet",
+      "status": "planned",
+      "category": "liquidity",
+      "url": null,
+      "contracts": [],
+      "checks": [],
+      "notes": "Template entry. Add LP token checks for V2 pools or nonfungible position manager checks for V3-style pools."
+    },
+    {
+      "name": "Future Pharos Staking Vault",
+      "slug": "future-pharos-staking",
+      "network": "mainnet",
+      "status": "planned",
+      "category": "staking",
+      "url": null,
+      "contracts": [],
+      "checks": [],
+      "notes": "Template entry. Add staking balance and earned reward selectors when contracts are verified."
+    }
+  ]
+}

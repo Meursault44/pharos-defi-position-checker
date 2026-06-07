@@ -1,0 +1,30 @@
+{
+  "name": "pharos-defi-position-checker",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Future-ready read-only DeFi position checker for Pharos wallets.",
+  "main": "scripts/check-positions.ts",
+  "bin": {
+    "pharos-defi-position-checker": "scripts/check-positions.ts"
+  },
+  "scripts": {
+    "check": "tsc --noEmit",
+    "positions": "tsx scripts/check-positions.ts"
+  },
+  "keywords": [
+    "pharos",
+    "defi",
+    "positions",
+    "wallet",
+    "skill"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^22.15.0",
+    "tsx": "^4.20.6",
+    "typescript": "^5.8.3"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -47,14 +47,14 @@ Scan public wallets against live protocol entries in `assets/protocols.json`. Th
 ### Command Template
 
 ```bash
-npm run positions -- --wallets <wallet-or-label-list> [--network atlantic-testnet|mainnet] [--protocol <slug|all>] [--include-zero]
+npm run positions -- --wallets <wallet-address-list> [--network atlantic-testnet|mainnet] [--protocol <slug|all>] [--include-zero]
 ```
 
 ### Parameters
 
 | Parameter | Required | Description |
 | --- | --- | --- |
-| `--wallets` | Yes | Comma, space, semicolon, or newline separated wallet addresses and saved labels. |
+| `--wallets` | Yes | Comma, space, semicolon, or newline separated wallet addresses. Resolve aliases with `pharos-wallet-address-book` first. |
 | `--network` | No | Defaults to `atlantic-testnet`. Use `mainnet` only when explicitly requested. |
 | `--protocol` | No | Restrict checks to a protocol slug or use `all`. |
 | `--include-zero` | No | Include zero-balance checks in the output. |
@@ -73,8 +73,8 @@ For human answers, print the wallet once at the top, then summarize active posit
 
 ### Error Handling
 
-- Missing wallets: ask for addresses or saved labels.
-- Unknown saved label: suggest `--list-wallets`.
+- Missing wallets: ask for direct wallet addresses.
+- Alias/name provided instead of address: resolve it with `pharos-wallet-address-book`, then rerun this checker with the resolved address.
 - RPC failure: report that the snapshot could not be completed and keep the warning visible.
 - Empty live registry: return a readiness/no-position report, not invented balances.
 
@@ -94,7 +94,7 @@ Use planned entries to explain what the checker is prepared to support later. Pl
 ### Command Template
 
 ```bash
-npm run positions -- --wallets <wallet-or-label-list> --include-planned
+npm run positions -- --wallets <wallet-address-list> --include-planned
 ```
 
 ### Output Parsing
@@ -115,7 +115,7 @@ Discovery checks recent explorer token transfers for addresses that match protoc
 ### Command Template
 
 ```bash
-npm run positions -- --wallets <wallet-or-label-list> --discover
+npm run positions -- --wallets <wallet-address-list> --discover
 ```
 
 ### Output Parsing
@@ -136,7 +136,7 @@ The checker can render reports as human text, JSON, or CSV. JSON is best for ano
 ### Command Template
 
 ```bash
-npm run positions -- --wallets <wallet-or-label-list> --format <human|json|csv> --save <path>
+npm run positions -- --wallets <wallet-address-list> --format <human|json|csv> --save <path>
 ```
 
 ### Parameters
@@ -150,26 +150,6 @@ npm run positions -- --wallets <wallet-or-label-list> --format <human|json|csv> 
 
 - Prefer JSON when another tool will consume the result.
 - Prefer human output when answering directly.
-
-## Manage Saved Wallet Labels
-
-### Overview
-
-Saved labels are local aliases for public addresses. They are convenience data only and must never contain secrets.
-
-### Command Templates
-
-```bash
-npm run positions -- --add-wallet Main:0xWallet
-npm run positions -- --list-wallets
-npm run positions -- --remove-wallet Main
-```
-
-### Agent Guidelines
-
-- Store public EVM addresses only.
-- Use short names with letters, numbers, dot, underscore, or dash.
-- If the user needs a shared address book across skills, prefer the dedicated `pharos-wallet-address-book` skill.
 
 ## Protocol Registry
 
@@ -270,8 +250,8 @@ Before marking a protocol `live`:
 
 | Failure | Response |
 | --- | --- |
-| `Missing --wallets` | Ask for wallet addresses or saved labels. |
-| `Unknown wallet name` | Suggest `--list-wallets` or `--add-wallet Name:0xAddress`. |
+| `Missing --wallets` | Ask for direct wallet addresses. |
+| Wallet alias/name provided | Resolve it with `pharos-wallet-address-book`, then pass the direct address to this checker. |
 | `Unsupported network` | Use `atlantic-testnet` or `mainnet`. |
 | RPC HTTP or JSON-RPC error | Report the network, RPC error, and that no complete snapshot was produced. |
 | Explorer discovery error | Keep the balance scan result and show discovery as unavailable. |

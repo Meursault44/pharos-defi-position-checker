@@ -15,7 +15,6 @@ Pharos DeFi is still emerging, so this skill is intentionally honest: it does no
 - Shows planned mainnet ecosystem coverage automatically when mainnet is requested and no live mainnet adapters are available.
 - Future-ready adapters for ERC20 receipt tokens, ERC-4626 vaults, staking balances, ERC-721 position NFT counts, and protocol-transfer discovery.
 - Formats human output as separated Markdown position bullets with the wallet printed once at the top.
-- Supports saved wallet names with `--add-wallet`, `--list-wallets`, `--wallets Name`, and `--remove-wallet`.
 - Exports human-readable, JSON, or CSV reports.
 - Saves reports with `--save`.
 - Includes snapshot block, timestamp, protocol readiness, and warnings.
@@ -37,16 +36,16 @@ Check a wallet:
 npm run positions -- --wallets 0xWallet
 ```
 
-Check saved and direct wallets:
+Check multiple wallets:
 
 ```bash
-npm run positions -- --wallets Main,0xWallet2
+npm run positions -- --wallets 0xWallet1,0xWallet2
 ```
 
 Show planned/future coverage:
 
 ```bash
-npm run positions -- --wallets Main --include-planned
+npm run positions -- --wallets 0xWallet --include-planned
 ```
 
 Check mainnet and show planned ecosystem coverage when no live adapters are available:
@@ -58,32 +57,23 @@ npm run positions -- --network mainnet --wallets 0xWallet
 Include zero adapter checks:
 
 ```bash
-npm run positions -- --wallets Main --include-zero
+npm run positions -- --wallets 0xWallet --include-zero
 ```
 
 Discover recent transfer hints:
 
 ```bash
-npm run positions -- --wallets Main --discover
+npm run positions -- --wallets 0xWallet --discover
 ```
 
 JSON and CSV:
 
 ```bash
-npm run positions -- --wallets Main --format json
-npm run positions -- --wallets Main --format csv --save report.csv
+npm run positions -- --wallets 0xWallet --format json
+npm run positions -- --wallets 0xWallet --format csv --save report.csv
 ```
 
-## Saved Wallet Names
-
-```bash
-npm run positions -- --add-wallet Main:0xWallet
-npm run positions -- --list-wallets
-npm run positions -- --wallets Main
-npm run positions -- --remove-wallet Main
-```
-
-Saved names live in `assets/wallet-labels.json`. Store public addresses only.
+Saved wallet aliases are intentionally not managed by this skill. Use `pharos-wallet-address-book` to resolve aliases, then pass direct addresses to this checker.
 
 ## Output Behavior
 
@@ -102,13 +92,10 @@ The important design choice: planned protocols are documented but not scanned as
 
 ## Example Natural Language Prompts
 
-- "Check my DeFi positions on Main"
-- "Scan Main and Trading for Pharos DeFi"
+- "Check DeFi positions for 0x..."
+- "Scan two wallet addresses for Pharos DeFi"
 - "Show planned DeFi coverage for Pharos"
 - "Export positions as CSV"
-- "Save wallet Main:0x..."
-- "List saved wallets"
-- "Remove wallet Main"
 
 ## Safety
 

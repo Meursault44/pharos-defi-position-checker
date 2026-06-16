@@ -18,9 +18,6 @@ const SELECTORS = {
   totalAssets: "01e1d114",
 } as const;
 
-const WALLET_BOOK_FILE = path.join(ROOT, "assets", "wallet-labels.json");
-const WALLET_NAME_PATTERN = /^[A-Za-z0-9_.-]{1,40}$/;
-
 type CliArgs = Record<string, string | boolean>;
 type OutputFormat = "human" | "json" | "csv";
 type ProtocolStatus = "live" | "planned" | "deprecated" | "disabled";
@@ -162,10 +159,6 @@ function isAddress(value: unknown): value is string {
   return typeof value === "string" && /^0x[a-fA-F0-9]{40}$/.test(value);
 }
 
-function isWalletName(value: unknown): value is string {
-  return typeof value === "string" && WALLET_NAME_PATTERN.test(value) && !value.startsWith("0x");
-}
-
 function shortAddress(address: string): string {
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
 }
@@ -174,24 +167,14 @@ function loadJson<T>(file: string): T {
   return JSON.parse(fs.readFileSync(file, "utf8")) as T;
 }
 
-function saveJson(file: string, value: unknown): void {
-  fs.mkdirSync(path.dirname(file), { recursive: true });
-  fs.writeFileSync(file, `${JSON.stringify(value, null, 2)}\n`, "utf8");
-}
-
 function printHelp(): void {
   console.log(`Pharos DeFi Position Checker
 
 Usage:
   npm run positions -- --wallets 0xWallet1,0xWallet2 [options]
 
-Wallet address book:
-  --add-wallet <name:addr>  Save a wallet name locally
-  --list-wallets           List saved wallet names
-  --remove-wallet <name>    Remove a saved wallet name
-
 Position checks:
-  --wallets <list>          Wallet addresses or saved names
+  --wallets <list>          Wallet addresses
   --network <name>          atlantic-testnet (default) or mainnet
   --protocol <slug|all>     Limit checks to one protocol slug
   --include-planned         Include planned protocol notes in human output
@@ -202,9 +185,8 @@ Position checks:
   --help                    Show this help
 
 Examples:
-  npm run positions -- --add-wallet Main:0x...
-  npm run positions -- --wallets Main --include-planned
-  npm run positions -- --wallets Main,0x... --discover
+  npm run positions -- --wallets 0x... --include-planned
+  npm run positions -- --wallets 0x...,0x... --discover
   npm run positions -- --wallets 0x... --format json --save report.json`);
 }
 
@@ -214,38 +196,15 @@ function resolveFormat(value: string | undefined): OutputFormat {
   throw new Error(`Unsupported format: ${format}. Use human, json, or csv.`);
 }
 
-function loadWalletBook(): Record<string, string> {
-  if (!fs.existsSync(WALLET_BOOK_FILE)) return {};
-  const parsed = loadJson<unknown>(WALLET_BOOK_FILE);
-  if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) throw new Error("Invalid wallet-labels.json");
-  const book: Record<string, string> = {};
-  for (const [name, address] of Object.entries(parsed)) {
-    if (!isWalletName(name)) throw new Error(`Invalid saved wallet name: ${name}`);
-    if (!isAddress(address)) throw new Error(`Invalid saved wallet address for ${name}`);
-    book[name] = address;
-  }
-  return book;
-}
-
-function parseNamedAddress(value: string): WalletSpec {
-  const match = value.match(/^\s*([A-Za-z0-9_.-]{1,40})\s*:\s*(0x[a-fA-F0-9]{40})\s*$/);
-  if (!match) throw new Error(`Invalid wallet mapping: ${value}. Expected Name:0xAddress.`);
-  if (!isWalletName(match[1])) throw new Error(`Invalid wallet name: ${match[1]}`);
-  return { label: match[1], address: match[2] };
-}
-
-function parseWallets(value: string | undefined, book: Record<string, string>): WalletSpec[] {
+function parseWallets(value: string | undefined): WalletSpec[] {
   if (!value) return [];
   return value
     .split(/[,\s;\n]+/)
     .map((item) => item.trim())
     .filter(Boolean)
     .map((item) => {
-      if (/^[A-Za-z0-9_.-]{1,40}\s*:\s*0x[a-fA-F0-9]{40}$/.test(item)) return parseNamedAddress(item);
       if (isAddress(item)) return { label: null, address: item };
-      if (isWalletName(item) && book[item]) return { label: item, address: book[item] };
-      if (isWalletName(item)) throw new Error(`Unknown wallet name: ${item}. Add it with --add-wallet ${item}:0xAddress.`);
-      throw new Error(`Invalid wallet address or name: ${item}`);
+      throw new Error(`Invalid wallet address: ${item}. Resolve saved aliases with pharos-wallet-address-book before running this checker.`);
     });
 }
 
@@ -555,32 +514,11 @@ async function main(): Promise<void> {
     return;
   }
 
-  const book = loadWalletBook();
-  const addWallet = stringArg(args["add-wallet"]);
-  const removeWallet = stringArg(args["remove-wallet"]);
-  if (addWallet) {
-    const wallet = parseNamedAddress(addWallet);
-    book[wallet.label!] = wallet.address;
-    saveJson(WALLET_BOOK_FILE, Object.fromEntries(Object.entries(book).sort(([left], [right]) => left.localeCompare(right))));
-    console.log(`Saved wallet ${wallet.label}: ${wallet.address}`);
-    return;
-  }
-  if (removeWallet) {
-    if (!isWalletName(removeWallet)) throw new Error(`Invalid wallet name: ${removeWallet}`);
-    if (!book[removeWallet]) throw new Error(`Unknown wallet name: ${removeWallet}`);
-    delete book[removeWallet];
-    saveJson(WALLET_BOOK_FILE, Object.fromEntries(Object.entries(book).sort(([left], [right]) => left.localeCompare(right))));
-    console.log(`Removed wallet ${removeWallet}`);
-    return;
-  }
-  if (boolArg(args["list-wallets"])) {
-    const entries = Object.entries(book);
-    if (entries.length === 0) console.log("No saved wallets.");
-    else for (const [name, address] of entries) console.log(`${name}: ${address}`);
-    return;
+  if (args["add-wallet"] || args["remove-wallet"] || args["list-wallets"]) {
+    throw new Error("Wallet address book commands are not supported by this checker. Use pharos-wallet-address-book to manage aliases, then pass direct addresses with --wallets.");
   }
 
-  const wallets = parseWallets(stringArg(args.wallets) || stringArg(args.wallet), book);
+  const wallets = parseWallets(stringArg(args.wallets) || stringArg(args.wallet));
   if (wallets.length === 0) throw new Error("Missing --wallets address list");
 
   const network = loadNetwork(stringArg(args.network));
@@ -655,10 +593,10 @@ main().catch((error: unknown) => {
   console.error(JSON.stringify({
     error: message,
     hint: message.includes("Missing --wallets")
-      ? "Pass addresses or saved names with --wallets 0xWallet,Name. Use --help for examples."
-      : message.includes("Unknown wallet name")
-        ? "Use --list-wallets to see saved names, or add one with --add-wallet Name:0xWallet."
-        : "Use --help for usage examples.",
+      ? "Pass direct wallet addresses with --wallets 0xWallet. Resolve aliases with pharos-wallet-address-book first."
+      : message.includes("Wallet address book commands")
+        ? "Use pharos-wallet-address-book for alias management, then run this checker with direct addresses."
+      : "Use --help for usage examples.",
   }, null, 2));
   process.exit(1);
 });

@@ -1,6 +1,6 @@
 ---
 name: pharos-defi-position-checker
-description: Future-ready read-only DeFi position checker for Pharos wallets. Use when the user asks to check, scan, compare, summarize, export, or monitor DeFi positions, lending supplies/borrows, staking balances, vault shares, LP exposure, yield positions, protocol activity, or saved wallet names on Pharos Atlantic testnet or Pharos mainnet, including cases where Pharos DeFi protocols are not live yet and the agent must return honest no-position/readiness reports instead of hallucinated positions.
+description: Future-ready read-only DeFi position checker for Pharos wallets. Use when the user asks to check, scan, compare, summarize, export, or monitor DeFi positions, lending supplies/borrows, staking balances, vault shares, LP exposure, yield positions, or protocol activity on Pharos Atlantic testnet or Pharos mainnet, including cases where Pharos DeFi protocols are not live yet and the agent must return honest no-position/readiness reports instead of hallucinated positions.
 ---
 
 # Pharos DeFi Position Checker
@@ -12,7 +12,7 @@ Always combine this skill with `pharos-skill-engine` for Pharos network context,
 ## Prerequisites
 
 - Node.js 18+ with npm dependencies installed in this skill repository.
-- Public wallet addresses or saved public labels only.
+- Public wallet addresses only. Resolve saved aliases with `pharos-wallet-address-book` before running this checker.
 - No private keys, seed phrases, signatures, write calls, approvals, swaps, or transactions.
 - Use Pharos Atlantic testnet by default. Use Pharos mainnet only when the user explicitly asks for mainnet.
 
@@ -34,14 +34,13 @@ Always combine this skill with `pharos-skill-engine` for Pharos network context,
 | User need | Capability | Detailed instructions |
 | --- | --- | --- |
 | Check or scan DeFi positions for one wallet | Run the position checker on the default Atlantic testnet | `references/protocol-registry.md#scan-defi-positions` |
-| Compare several wallets | Run the same scan with comma-separated wallets or labels | `references/protocol-registry.md#scan-defi-positions` |
+| Compare several wallets | Run the same scan with comma-separated wallet addresses | `references/protocol-registry.md#scan-defi-positions` |
 | Show future or planned DeFi coverage | Include planned registry entries without treating them as live | `references/protocol-registry.md#include-planned-protocols` |
 | Review official Pharos testnet DeFi surfaces | Read the testnet catalog before suggesting coverage | `references/protocol-registry.md#official-testnet-defi-catalog` |
 | Discover possible protocol activity | Use explorer transfer hints and mark them as hints only | `references/protocol-registry.md#discover-protocol-hints` |
 | Export a report | Render human, JSON, or CSV output and optionally save it | `references/protocol-registry.md#export-position-report` |
-| Save, list, or remove public wallet labels | Maintain local address labels for convenience | `references/protocol-registry.md#manage-saved-wallet-labels` |
 | Add or review protocol definitions | Update the registry only after contract verification | `references/protocol-registry.md#protocol-registry` |
-| Troubleshoot scan failures | Explain RPC, explorer, registry, and wallet-name errors | `references/protocol-registry.md#common-failure-handling` |
+| Troubleshoot scan failures | Explain RPC, explorer, registry, and wallet-address errors | `references/protocol-registry.md#common-failure-handling` |
 
 ## Fast Path
 
@@ -54,7 +53,7 @@ npm run positions -- --wallets 0xWallet
 Multiple wallets:
 
 ```bash
-npm run positions -- --wallets Main,0xWallet2,Trading
+npm run positions -- --wallets 0xWallet1,0xWallet2
 ```
 
 Mainnet override:
@@ -66,20 +65,20 @@ npm run positions -- --network mainnet --wallets 0xWallet
 Include planned protocols:
 
 ```bash
-npm run positions -- --wallets Main --include-planned
+npm run positions -- --wallets 0xWallet --include-planned
 ```
 
 Discover recent protocol-transfer hints:
 
 ```bash
-npm run positions -- --wallets Main --discover
+npm run positions -- --wallets 0xWallet --discover
 ```
 
 JSON or CSV:
 
 ```bash
-npm run positions -- --wallets Main --format json
-npm run positions -- --wallets Main --format csv --save report.csv
+npm run positions -- --wallets 0xWallet --format json
+npm run positions -- --wallets 0xWallet --format csv --save report.csv
 ```
 
 Help:
@@ -95,9 +94,7 @@ npm run positions -- --help
 - "mainnet" -> add `--network mainnet`
 - "show future coverage", "what will this support", "planned protocols" -> add `--include-planned`
 - "find protocol activity", "discover DeFi", "recent transfers" -> add `--discover`
-- "save wallet", "add wallet" -> `--add-wallet Name:0xAddress`
-- "list saved wallets" -> `--list-wallets`
-- "delete/remove wallet" -> `--remove-wallet Name`
+- saved wallet names -> resolve them with `pharos-wallet-address-book` first, then pass direct addresses here
 - "JSON", "CSV", "save report" -> `--format json|csv` and optionally `--save <path>`
 
 ## Reporting Rules

@@ -24,7 +24,7 @@ const WALLET_NAME_PATTERN = /^[A-Za-z0-9_.-]{1,40}$/;
 type CliArgs = Record<string, string | boolean>;
 type OutputFormat = "human" | "json" | "csv";
 type ProtocolStatus = "live" | "planned" | "deprecated" | "disabled";
-type CheckType = "erc20-balance" | "erc4626-share" | "staking-balance" | "reward-earned";
+type CheckType = "erc20-balance" | "erc4626-share" | "staking-balance" | "nft-balance" | "reward-earned";
 
 type NetworkConfig = {
   name: string;
@@ -192,7 +192,7 @@ Wallet address book:
 
 Position checks:
   --wallets <list>          Wallet addresses or saved names
-  --network <name>          mainnet (default) or atlantic-testnet
+  --network <name>          atlantic-testnet (default) or mainnet
   --protocol <slug|all>     Limit checks to one protocol slug
   --include-planned         Include planned protocol notes in human output
   --include-zero            Include zero-balance checks in reports
@@ -251,7 +251,7 @@ function parseWallets(value: string | undefined, book: Record<string, string>): 
 
 function loadNetwork(name: string | undefined): NetworkConfig {
   const networks = loadJson<NetworksFile>(path.join(ROOT, "assets", "networks.json"));
-  const selected = name || networks.defaultNetwork || "mainnet";
+  const selected = name || networks.defaultNetwork || "atlantic-testnet";
   const network = networks.networks.find((item) => item.name === selected);
   if (!network) throw new Error(`Unsupported network: ${selected}`);
   return network;
@@ -343,10 +343,10 @@ async function runCheck(
   }
 
   try {
-    if (check.type === "erc20-balance" || check.type === "staking-balance") {
+    if (check.type === "erc20-balance" || check.type === "staking-balance" || check.type === "nft-balance") {
       const raw = decodeUint(await ethCall(rpcUrl, contractAddress, `0x${SELECTORS.balanceOf}${padAddress(wallet.address)}`, blockHex));
       if (raw === null) throw new Error("empty balanceOf response");
-      const decimals = check.decimals ?? contract?.tokenDecimals ?? 18;
+      const decimals = check.decimals ?? contract?.tokenDecimals ?? (check.type === "nft-balance" ? 0 : 18);
       return {
         walletLabel: wallet.label,
         wallet: wallet.address,
@@ -488,16 +488,19 @@ function toHuman(report: Report, includePlanned: boolean): string {
 
   const active = report.positions.filter((position) => position.status === "active");
   if (active.length === 0) {
-    lines.push("Active DeFi positions: none detected from the current live registry.");
-    if (report.liveProtocolCount === 0) {
-      lines.push("Registry note: no verified live Pharos DeFi protocols are enabled yet. Add verified contracts to assets/protocols.json when they launch.");
-    }
+    lines.push("Active balance positions: none detected by the current adapters.");
+    if (report.liveProtocolCount === 0) lines.push("Registry note: no live Pharos DeFi protocols are enabled for this network.");
   } else {
-    lines.push("Active DeFi positions:");
-    for (const position of active) {
+    lines.push("Active balance positions:");
+    active.forEach((position, index) => {
       const label = position.walletLabel ? `${position.walletLabel} (${shortAddress(position.wallet)})` : shortAddress(position.wallet);
-      lines.push(`- ${label}: ${position.protocol} / ${position.label} = ${position.balance} ${position.assetSymbol}`);
-    }
+      lines.push("");
+      lines.push(`- **${index + 1}. ${position.protocol}**`);
+      lines.push(`  **Wallet:** ${label}`);
+      lines.push(`  **Position:** ${position.label}`);
+      lines.push(`  **Balance:** ${position.balance} ${position.assetSymbol}`);
+      lines.push(`  **Contract:** ${position.contract}`);
+    });
   }
 
   const zero = report.positions.filter((position) => position.status === "zero");
@@ -591,10 +594,14 @@ async function main(): Promise<void> {
 
   for (const wallet of wallets) {
     for (const protocol of liveProtocols) {
-      for (const check of protocol.checks || []) {
+      const checks = protocol.checks || [];
+      const protocolPositions: Position[] = [];
+      for (const check of checks) {
         const position = await runCheck(network.rpcUrl, blockHex, wallet, protocol, check, warnings);
-        if (position && (includeZero || position.status !== "zero")) positions.push(position);
+        if (position) protocolPositions.push(position);
       }
+      const visiblePositions = protocolPositions.filter((position) => includeZero || position.status !== "zero");
+      positions.push(...visiblePositions);
     }
   }
 

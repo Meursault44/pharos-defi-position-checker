@@ -1,43 +1,276 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-06-07",
+  "updatedAt": "2026-06-16",
   "notes": [
-    "Pharos public DeFi is still emerging. Keep planned protocols disabled until verified contracts are live.",
-    "Add protocol contracts and checks here without changing the TypeScript scanner."
+    "Default coverage is Pharos Atlantic testnet. The live entries below come from the public Pharos testnet DeFi/task catalog.",
+    "On Atlantic testnet, official DeFi surfaces are treated as live integrations even when a protocol-specific balance adapter is still pending."
   ],
   "protocols": [
     {
-      "name": "Future Pharos Lending Market",
-      "slug": "future-pharos-lending",
-      "network": "mainnet",
-      "status": "planned",
-      "category": "lending",
-      "url": null,
-      "contracts": [],
-      "checks": [],
-      "notes": "Template entry. Replace with verified pool, debt token, and collateral token checks when a Pharos lending market launches."
-    },
-    {
-      "name": "Future Pharos DEX LP",
-      "slug": "future-pharos-dex-lp",
-      "network": "mainnet",
-      "status": "planned",
+      "name": "FaroSwap",
+      "slug": "faroswap",
+      "network": "atlantic-testnet",
+      "status": "live",
       "category": "liquidity",
-      "url": null,
-      "contracts": [],
-      "checks": [],
-      "notes": "Template entry. Add LP token checks for V2 pools or nonfungible position manager checks for V3-style pools."
+      "url": "https://faroswap.xyz/pool",
+      "contracts": [
+        {
+          "name": "WPHRS",
+          "address": "0x838800b758277cc111b2d48ab01e5e164f8e9471",
+          "standard": "erc20",
+          "role": "wrapped-native",
+          "tokenSymbol": "WPHRS",
+          "tokenDecimals": 18
+        },
+        {
+          "name": "DODOFeeRouteProxy",
+          "address": "0x819829e5cf6e19f9fed92f6b4cc1edf45a2cc4a2",
+          "standard": "router",
+          "role": "swap-router"
+        },
+        {
+          "name": "DLP_90bfe28e",
+          "address": "0x90bfe28ef7535cacd5dab57d191909881eb1b360",
+          "standard": "erc20",
+          "role": "lp-token",
+          "tokenSymbol": "DLP",
+          "tokenDecimals": 6
+        }
+      ],
+      "checks": [
+        {
+          "type": "erc20-balance",
+          "label": "DLP_90bfe28e LP",
+          "contract": "DLP_90bfe28e",
+          "category": "liquidity",
+          "assetSymbol": "DLP",
+          "decimals": 6
+        }
+      ],
+      "notes": "Official Pharos testnet Provide Liquidity and Swap app powered by DODO DEXpert. DLP_90bfe28e and DODOFeeRouteProxy were found from Atlantic testnet explorer activity; additional AMM V2/V3 pool and staking/mining adapters can be added as verified."
     },
     {
-      "name": "Future Pharos Staking Vault",
-      "slug": "future-pharos-staking",
-      "network": "mainnet",
-      "status": "planned",
-      "category": "staking",
-      "url": null,
+      "name": "Bitverse",
+      "slug": "bitverse",
+      "network": "atlantic-testnet",
+      "status": "live",
+      "category": "liquidity",
+      "url": "https://testnet.bitverse.zone/app/",
       "contracts": [],
       "checks": [],
-      "notes": "Template entry. Add staking balance and earned reward selectors when contracts are verified."
+      "notes": "Official Pharos testnet Swap, Provide Liquidity, and Trading app. Position surface is live on testnet; verified Pharos/EVM position contracts or a documented position API are pending."
+    },
+    {
+      "name": "AquaFlux",
+      "slug": "aquaflux",
+      "network": "atlantic-testnet",
+      "status": "live",
+      "category": "rwafi",
+      "url": "https://testnet.aquaflux.pro/earn",
+      "contracts": [
+        {
+          "name": "S_UST_30JUN2026",
+          "address": "0x93bc7267d802201e51926bef331de80c965ec55f",
+          "standard": "erc20",
+          "role": "rwafi-senior-token",
+          "tokenSymbol": "S-UST",
+          "tokenDecimals": 18
+        },
+        {
+          "name": "P_UST_30JUN2026",
+          "address": "0x2bb80cfd6f2b14f6b93b1269c9a19f2dc0933344",
+          "standard": "erc20",
+          "role": "rwafi-principal-token",
+          "tokenSymbol": "P-UST",
+          "tokenDecimals": 18
+        },
+        {
+          "name": "S_CORP_10JAN2026",
+          "address": "0xed75c5b68284a1a9568e26a2b48655a3d518d4bc",
+          "standard": "erc20",
+          "role": "rwafi-senior-token",
+          "tokenSymbol": "S-CORP",
+          "tokenDecimals": 18
+        },
+        {
+          "name": "C_CORP_10JAN2026",
+          "address": "0x28dcc792f771c3648807c64d384737ef8f33c28b",
+          "standard": "erc20",
+          "role": "rwafi-coupon-token",
+          "tokenSymbol": "C-CORP",
+          "tokenDecimals": 18
+        },
+        {
+          "name": "P_CORP_10JAN2026",
+          "address": "0x4882664f9a3d055aef9c92b6d8d65a7939f77eaa",
+          "standard": "erc20",
+          "role": "rwafi-principal-token",
+          "tokenSymbol": "P-CORP",
+          "tokenDecimals": 18
+        },
+        {
+          "name": "SS_CORP_31MAR2026",
+          "address": "0xe6ca726ad81a7171a4f8a031163aa9c60f30e99b",
+          "standard": "erc20",
+          "role": "rwafi-surplus-token",
+          "tokenSymbol": "SS-CORP",
+          "tokenDecimals": 18
+        }
+      ],
+      "checks": [
+        {
+          "type": "erc20-balance",
+          "label": "S UST 30JUN2026",
+          "contract": "S_UST_30JUN2026",
+          "category": "rwafi",
+          "assetSymbol": "S-UST",
+          "decimals": 18
+        },
+        {
+          "type": "erc20-balance",
+          "label": "P UST 30JUN2026",
+          "contract": "P_UST_30JUN2026",
+          "category": "rwafi",
+          "assetSymbol": "P-UST",
+          "decimals": 18
+        },
+        {
+          "type": "erc20-balance",
+          "label": "S CORP 10JAN2026",
+          "contract": "S_CORP_10JAN2026",
+          "category": "rwafi",
+          "assetSymbol": "S-CORP",
+          "decimals": 18
+        },
+        {
+          "type": "erc20-balance",
+          "label": "C CORP 10JAN2026",
+          "contract": "C_CORP_10JAN2026",
+          "category": "rwafi",
+          "assetSymbol": "C-CORP",
+          "decimals": 18
+        },
+        {
+          "type": "erc20-balance",
+          "label": "P CORP 10JAN2026",
+          "contract": "P_CORP_10JAN2026",
+          "category": "rwafi",
+          "assetSymbol": "P-CORP",
+          "decimals": 18
+        },
+        {
+          "type": "erc20-balance",
+          "label": "Corporate Bond Surplus 31MAR2026",
+          "contract": "SS_CORP_31MAR2026",
+          "category": "rwafi",
+          "assetSymbol": "SS-CORP",
+          "decimals": 18
+        }
+      ],
+      "notes": "Official Pharos testnet RWAfi app. RWAfi receipt tokens were verified from Atlantic testnet explorer activity and on-chain balanceOf checks."
+    },
+    {
+      "name": "Zenith",
+      "slug": "zenith-lending",
+      "network": "atlantic-testnet",
+      "status": "live",
+      "category": "lending",
+      "url": "https://testnet-lending.zenithswap.xyz/markets/",
+      "contracts": [
+        {
+          "name": "aWETH",
+          "address": "0x8725ac76a140ec446318cb78c2e6ffd9c3a55fba",
+          "standard": "erc20",
+          "role": "lending-supply-token",
+          "tokenSymbol": "aWETH",
+          "tokenDecimals": 18
+        }
+      ],
+      "checks": [
+        {
+          "type": "erc20-balance",
+          "label": "Supplied WETH",
+          "contract": "aWETH",
+          "category": "lending",
+          "assetSymbol": "aWETH",
+          "decimals": 18
+        }
+      ],
+      "notes": "Listed in the Pharos testnet Lend & Borrow section. aWETH supply-token adapter was verified from Atlantic testnet explorer activity."
+    },
+    {
+      "name": "Faroo Staking",
+      "slug": "faroo-staking",
+      "network": "atlantic-testnet",
+      "status": "live",
+      "category": "staking",
+      "url": "https://pharos-testnet.socialscan.io/token/0xc9a0b63d91c2a808dd631d031f037944feddaa12",
+      "contracts": [
+        {
+          "name": "stPROS",
+          "address": "0xc9a0b63d91c2a808dd631d031f037944feddaa12",
+          "standard": "erc20",
+          "role": "staking-receipt",
+          "tokenSymbol": "stPROS",
+          "tokenDecimals": 18
+        }
+      ],
+      "checks": [
+        {
+          "type": "staking-balance",
+          "label": "Staked PROS receipt",
+          "contract": "stPROS",
+          "category": "staking",
+          "assetSymbol": "stPROS",
+          "decimals": 18
+        }
+      ],
+      "notes": "Staked PROS receipt token verified from Atlantic testnet explorer activity."
+    },
+    {
+      "name": "Uniswap LP Positions",
+      "slug": "uniswap-lp-positions",
+      "network": "atlantic-testnet",
+      "status": "live",
+      "category": "liquidity",
+      "url": "https://pharos-testnet.socialscan.io/address/0x4638a8e4d6df3376c1c6761adef2a49525ffaa89",
+      "contracts": [
+        {
+          "name": "UNI_V4_POSM",
+          "address": "0x4638a8e4d6df3376c1c6761adef2a49525ffaa89",
+          "standard": "erc721",
+          "role": "v4-position-manager",
+          "tokenSymbol": "UNI-V4-POSM",
+          "tokenDecimals": 0
+        },
+        {
+          "name": "UNI_V3_POS",
+          "address": "0x1d54de652e089e35653f3e20b2e22809055fd094",
+          "standard": "erc721",
+          "role": "v3-position-manager",
+          "tokenSymbol": "UNI-V3-POS",
+          "tokenDecimals": 0
+        }
+      ],
+      "checks": [
+        {
+          "type": "nft-balance",
+          "label": "Uniswap V4 position NFTs",
+          "contract": "UNI_V4_POSM",
+          "category": "liquidity",
+          "assetSymbol": "UNI-V4-POSM",
+          "decimals": 0
+        },
+        {
+          "type": "nft-balance",
+          "label": "Uniswap V3 position NFTs",
+          "contract": "UNI_V3_POS",
+          "category": "liquidity",
+          "assetSymbol": "UNI-V3-POS",
+          "decimals": 0
+        }
+      ],
+      "notes": "ERC-721 position manager balances verified from Atlantic testnet explorer activity and on-chain balanceOf checks. The adapter reports position counts, not token IDs or underlying liquidity amounts."
     }
   ]
 }

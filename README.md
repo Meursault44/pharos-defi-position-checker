@@ -7,10 +7,12 @@ Pharos DeFi is still emerging, so this skill is intentionally honest: it does no
 ## Features
 
 - Checks DeFi positions across one or many Pharos wallets.
-- Defaults to Pharos mainnet.
-- Supports Atlantic testnet with `--network atlantic-testnet`.
+- Defaults to Pharos Atlantic testnet.
+- Supports Pharos mainnet with `--network mainnet` when the user explicitly asks for mainnet.
 - Uses a protocol registry in `assets/protocols.json`.
-- Future-ready adapters for ERC20 receipt tokens, ERC-4626 vaults, staking balances, and protocol-transfer discovery.
+- Tracks official Pharos testnet DeFi surfaces in `assets/testnet-defi-sources.json` for future adapter work.
+- Shows only adapter-verified balances in default wallet reports.
+- Future-ready adapters for ERC20 receipt tokens, ERC-4626 vaults, staking balances, ERC-721 position NFT counts, and protocol-transfer discovery.
 - Supports saved wallet names with `--add-wallet`, `--list-wallets`, `--wallets Name`, and `--remove-wallet`.
 - Exports human-readable, JSON, or CSV reports.
 - Saves reports with `--save`.
@@ -24,6 +26,8 @@ npm install
 ```
 
 ## Usage
+
+Default network is `atlantic-testnet`. Use `--network mainnet` only when the request explicitly needs Pharos mainnet.
 
 Check a wallet:
 

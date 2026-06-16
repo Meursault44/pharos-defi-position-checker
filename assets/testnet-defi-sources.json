@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-06-16",
+  "source": "https://api.pharosnetwork.xyz/info/tasks",
+  "sourceHeaders": {
+    "Referer": "https://testnet.pharosnetwork.xyz/",
+    "Origin": "https://testnet.pharosnetwork.xyz"
+  },
+  "network": "atlantic-testnet",
+  "sections": [
+    {
+      "name": "RWAfi",
+      "enabled": true,
+      "items": [
+        {
+          "name": "AquaFlux",
+          "actions": ["Structure", "Earn"],
+          "urls": ["https://testnet.aquaflux.pro/structure", "https://testnet.aquaflux.pro/earn"],
+          "positionCoverage": "live-surface"
+        },
+        {
+          "name": "Asseto",
+          "actions": ["Deposit"],
+          "urls": ["https://testnet.asseto.finance/pharos"],
+          "positionCoverage": "disabled-in-source"
+        }
+      ]
+    },
+    {
+      "name": "Lend & Borrow",
+      "enabled": false,
+      "items": [
+        {
+          "name": "Zenith",
+          "actions": ["Lending"],
+          "urls": ["https://testnet-lending.zenithswap.xyz/markets/"],
+          "positionCoverage": "live-surface"
+        }
+      ]
+    },
+    {
+      "name": "Swap",
+      "enabled": true,
+      "items": [
+        {
+          "name": "Bitverse",
+          "actions": ["Swap"],
+          "urls": ["https://testnet.bitverse.zone/app/?token=ETH/USDT"],
+          "positionCoverage": "live-surface"
+        },
+        {
+          "name": "FaroSwap",
+          "actions": ["Swap"],
+          "urls": ["https://faroswap.xyz/swap"],
+          "positionCoverage": "live-surface"
+        }
+      ]
+    },
+    {
+      "name": "Provide Liquidity",
+      "enabled": true,
+      "items": [
+        {
+          "name": "Bitverse",
+          "actions": ["Deposit"],
+          "urls": ["https://testnet.bitverse.zone/app/?spotLiquidity=0x05a0e5e588d282b9ca37de556e799b1e1f6e643433cce8e21bc4b46dd1198002"],
+          "positionCoverage": "live-surface"
+        },
+        {
+          "name": "FaroSwap",
+          "actions": ["Deposit"],
+          "urls": ["https://faroswap.xyz/pool"],
+          "positionCoverage": "live-surface"
+        }
+      ]
+    },
+    {
+      "name": "Trading",
+      "enabled": true,
+      "items": [
+        {
+          "name": "Bitverse",
+          "actions": ["Trade"],
+          "urls": ["https://testnet.bitverse.zone/app/?token=NVDA-USD"],
+          "positionCoverage": "planned"
+        }
+      ]
+    }
+  ],
+  "notes": [
+    "This catalog identifies official Pharos testnet DeFi surfaces.",
+    "Live-surface coverage means the integration is shown in reports even when protocol-specific balance adapters are still pending."
+  ]
+}

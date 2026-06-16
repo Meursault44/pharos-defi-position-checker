@@ -3,9 +3,54 @@
   "updatedAt": "2026-06-16",
   "notes": [
     "Default coverage is Pharos Atlantic testnet. The live entries below come from the public Pharos testnet DeFi/task catalog.",
-    "On Atlantic testnet, official DeFi surfaces are treated as live integrations even when a protocol-specific balance adapter is still pending."
+    "On Atlantic testnet, official DeFi surfaces are tracked for adapter work, but default reports only show adapter-verified balances.",
+    "On mainnet, ecosystem DeFi projects can be listed as planned coverage until verified production contracts are live."
   ],
   "protocols": [
+    {
+      "name": "FaroSwap",
+      "slug": "faroswap-mainnet",
+      "network": "mainnet",
+      "status": "planned",
+      "category": "liquidity",
+      "url": "https://faroswap.xyz/",
+      "contracts": [],
+      "checks": [],
+      "notes": "Planned mainnet DeFi coverage from the Pharos ecosystem. Add verified swap, pool, LP token, and staking adapters when production contracts are available."
+    },
+    {
+      "name": "Bitverse",
+      "slug": "bitverse-mainnet",
+      "network": "mainnet",
+      "status": "planned",
+      "category": "liquidity",
+      "url": "https://testnet.bitverse.zone/app/",
+      "contracts": [],
+      "checks": [],
+      "notes": "Planned mainnet DeFi coverage from the Pharos ecosystem. Add verified swap, liquidity, and trading position adapters when production contracts are available."
+    },
+    {
+      "name": "AquaFlux",
+      "slug": "aquaflux-mainnet",
+      "network": "mainnet",
+      "status": "planned",
+      "category": "rwafi",
+      "url": "https://testnet.aquaflux.pro/earn",
+      "contracts": [],
+      "checks": [],
+      "notes": "Planned mainnet RWAfi coverage from the Pharos ecosystem. Add verified earn, tranche, vault, or receipt-token adapters when production contracts are available."
+    },
+    {
+      "name": "Zenith",
+      "slug": "zenith-lending-mainnet",
+      "network": "mainnet",
+      "status": "planned",
+      "category": "lending",
+      "url": "https://testnet-lending.zenithswap.xyz/markets/",
+      "contracts": [],
+      "checks": [],
+      "notes": "Planned mainnet lending coverage from the Pharos ecosystem. Add verified supply, debt, collateral, and reward-token adapters when production contracts are available."
+    },
     {
       "name": "FaroSwap",
       "slug": "faroswap",
@@ -58,7 +103,7 @@
       "url": "https://testnet.bitverse.zone/app/",
       "contracts": [],
       "checks": [],
-      "notes": "Official Pharos testnet Swap, Provide Liquidity, and Trading app. Position surface is live on testnet; verified Pharos/EVM position contracts or a documented position API are pending."
+      "notes": "Official Pharos testnet Swap, Provide Liquidity, and Trading app. The surface is tracked for adapter work, but default reports hide it until verified Pharos/EVM position contracts or a documented position API are available."
     },
     {
       "name": "AquaFlux",

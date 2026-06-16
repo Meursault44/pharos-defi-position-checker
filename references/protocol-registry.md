@@ -2,7 +2,15 @@
 
 The checker is designed to work before and after Pharos DeFi launches. Current mainnet entries can stay disabled or planned; Atlantic testnet DeFi surfaces from the public Pharos catalog can stay in the registry for adapter work, but default wallet reports show only adapter-verified balances.
 
+Mainnet reports may show planned DeFi coverage by default when no live mainnet adapters are enabled. Planned entries are coverage targets, not proof of a current wallet position.
+
 Default network is Pharos Atlantic testnet. Use Pharos mainnet only when the user explicitly requests mainnet.
+
+## Default Testnet-First Behavior
+
+The normal scan path checks Atlantic testnet first and evaluates only live registry entries that have readable adapters. Adapter-pending catalog surfaces remain documented for future work, but they are not printed as wallet positions.
+
+When `--network mainnet` is used, active positions are shown only if live mainnet adapters exist. If no live mainnet adapters are enabled, the human report shows planned mainnet DeFi coverage from the ecosystem registry so users can see what the checker is prepared to support later.
 
 ## Official Testnet DeFi Catalog
 
@@ -34,7 +42,7 @@ Current Atlantic testnet DeFi surfaces include:
 
 ### Overview
 
-Scan public wallets against live protocol entries in `assets/protocols.json`. The scan is read-only and uses RPC calls such as `eth_blockNumber` and `eth_call`. On Atlantic testnet, default reports show only adapter-verified active balances.
+Scan public wallets against live protocol entries in `assets/protocols.json`. The scan is read-only and uses RPC calls such as `eth_blockNumber` and `eth_call`. On Atlantic testnet, default reports show only adapter-verified active balances and suppress adapter-pending catalog surfaces.
 
 ### Command Template
 
@@ -61,7 +69,7 @@ Read these fields first:
 - `positions`
 - `warnings`
 
-For human answers, summarize active positions first. If `positions` is empty, say that no active positions were detected from the current live registry.
+For human answers, print the wallet once at the top, then summarize active positions as separated Markdown bullets. If `positions` is empty, say that no active positions were detected from the current live registry. For mainnet, include planned coverage when no live adapters are enabled.
 
 ### Error Handling
 
@@ -81,7 +89,7 @@ For human answers, summarize active positions first. If `positions` is empty, sa
 
 ### Overview
 
-Use planned entries to explain what the checker is prepared to support later. Planned entries are documentation only and are not evidence of live user positions.
+Use planned entries to explain what the checker is prepared to support later. Planned entries are documentation only and are not evidence of live user positions. For mainnet, planned DeFi coverage from the Pharos ecosystem registry is shown by default when live adapters are not available yet.
 
 ### Command Template
 

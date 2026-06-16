@@ -19,13 +19,14 @@ Always combine this skill with `pharos-skill-engine` for Pharos network context,
 ## Network Rules
 
 - Default network: `atlantic-testnet`.
+- Default scan order: check Atlantic testnet first unless the user explicitly asks for mainnet.
 - Supported override: `mainnet`.
 - Network source of truth: `assets/networks.json`.
 - Protocol source of truth: `assets/protocols.json`.
 - Official testnet DeFi catalog snapshot: `assets/testnet-defi-sources.json`.
 - On `atlantic-testnet`, official DeFi surfaces from the Pharos testnet catalog can be tracked in the registry, but default reports show only adapter-verified balances.
 - If a live testnet integration has no protocol-specific balance adapter yet, do not show it in default position reports.
-- If no verified mainnet DeFi protocols are enabled, say so clearly and return a readiness/no-position report.
+- If no verified mainnet DeFi protocols are enabled, say so clearly and show planned mainnet DeFi coverage from the ecosystem registry when available.
 - Do not invent TVL, APY, USD value, protocol contracts, token IDs, underlying LP assets, or active positions.
 
 ## Capability Index
@@ -106,10 +107,11 @@ Return:
 - network, chain ID, snapshot block, timestamp
 - wallets scanned
 - live vs planned protocol count
-- active positions only by default
-- active positions only by default; ERC-721 position adapters report counts only unless a detail adapter exists
+- active adapter-verified positions only by default
+- no adapter-pending testnet surfaces in default wallet reports
+- ERC-721 position adapters report counts only unless a detail adapter exists
 - zero checks only with `--include-zero`
-- planned registry details only with `--include-planned`
+- planned registry details with `--include-planned`; mainnet reports may show planned DeFi coverage by default when no live adapters are enabled
 - warnings for RPC/explorer failures
 - explorer links for wallets when available
 

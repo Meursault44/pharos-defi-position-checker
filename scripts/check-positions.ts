@@ -484,6 +484,10 @@ function toHuman(report: Report, includePlanned: boolean): string {
   lines.push(`Network: ${report.network} (chain ${report.chainId})`);
   lines.push(`Snapshot: block ${report.snapshotBlock} at ${report.snapshotTime}`);
   lines.push(`Wallets: ${report.walletCount} | Protocols: ${report.liveProtocolCount} live, ${report.plannedProtocolCount} planned`);
+  if (report.wallets.length > 0) {
+    const walletLabels = report.wallets.map((wallet) => wallet.label ? `${wallet.label} (${shortAddress(wallet.address)})` : shortAddress(wallet.address));
+    lines.push(`Wallet: ${walletLabels.join(", ")}`);
+  }
   lines.push("");
 
   const active = report.positions.filter((position) => position.status === "active");
@@ -493,13 +497,11 @@ function toHuman(report: Report, includePlanned: boolean): string {
   } else {
     lines.push("Active balance positions:");
     active.forEach((position, index) => {
-      const label = position.walletLabel ? `${position.walletLabel} (${shortAddress(position.wallet)})` : shortAddress(position.wallet);
       lines.push("");
       lines.push(`- **${index + 1}. ${position.protocol}**`);
-      lines.push(`  **Wallet:** ${label}`);
-      lines.push(`  **Position:** ${position.label}`);
-      lines.push(`  **Balance:** ${position.balance} ${position.assetSymbol}`);
-      lines.push(`  **Contract:** ${position.contract}`);
+      lines.push(`  Position: ${position.label}`);
+      lines.push(`  Balance: ${position.balance} ${position.assetSymbol}`);
+      lines.push(`  Contract: ${position.contract}`);
     });
   }
 
@@ -509,11 +511,15 @@ function toHuman(report: Report, includePlanned: boolean): string {
     lines.push(`Zero checks: ${zero.length}`);
   }
 
-  if (includePlanned && report.plannedProtocols.length > 0) {
+  if ((includePlanned || report.network === "mainnet") && report.plannedProtocols.length > 0) {
     lines.push("");
-    lines.push("Planned protocol registry:");
+    lines.push(report.network === "mainnet" ? "Planned mainnet DeFi coverage:" : "Planned protocol registry:");
     for (const protocol of report.plannedProtocols) {
-      lines.push(`- ${protocol.name} (${protocol.category}): ${protocol.notes || "awaiting verified contracts"}`);
+      lines.push("");
+      lines.push(`- **${protocol.name}**`);
+      lines.push(`  Category: ${protocol.category}`);
+      lines.push(`  Status: planned`);
+      lines.push(`  Notes: ${protocol.notes || "awaiting verified contracts"}`);
     }
   }
 

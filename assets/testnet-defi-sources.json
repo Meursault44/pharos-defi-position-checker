@@ -89,6 +89,6 @@
   ],
   "notes": [
     "This catalog identifies official Pharos testnet DeFi surfaces.",
-    "Live-surface coverage means the integration is shown in reports even when protocol-specific balance adapters are still pending."
+    "Live-surface coverage means the integration is tracked for adapter work. Default wallet reports only show adapter-verified balances; adapter-pending surfaces stay hidden."
   ]
 }
